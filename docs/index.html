@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>首页</title>
+<link rel="stylesheet" href="/cbim/css/reset.css">
+<link rel="stylesheet" href="/cbim/css/comm/element-ui.min.css">
+<link rel="stylesheet" href="/cbim/css/main.css">
+<link rel="shortcut icon" href="/cbim//img/favicon.ico">
+
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js"></script>
+<script>
+var CBIM = {
+    root: '/cbim/',
+    rresRootoot: '/cbim/',
+};
+</script>
+<script src="/cbim/js/comm/jquery-3.4.1.min.js"></script>
+<script src="/cbim/js/request.js"></script>
+<script src="/cbim/js/comm/vue.min.js"></script>
+<script src="/cbim/js/comm/moment.js"></script>
+<script>
+Vue.prototype.$moment = moment;
+</script>
+<script src="/cbim/js/comm/element-ui.min.js"></script>
+<script src="/cbim/js/main.js"></script></head>
+<body>
+<style>
+header .header_top {
+    text-align: center;
+    width: 100%;
+    height: 48px;
+    background-color: #fff;
+    line-height: 48px;
+    color: #29333C;
+    box-shadow:0px 0px 6px 0px rgba(0,0,0,0.1);
+}
+
+
+header .header_top .el-menu.el-menu--horizontal{
+    border: 0;
+}
+
+header .header_top .el-menu--horizontal>.el-menu-item,
+header .header_top .el-menu--horizontal>.el-submenu .el-submenu__title{
+    height: 48px;
+    line-height: 48px;
+    font-size: 16px;
+    padding: 0 16px;
+    font-weight: 500;
+    border-bottom: 0;
+}
+
+header .header_top .is-active>.el-submenu__title>.el-submenu__icon-arrow,
+.header_nav_popper .is-active>.el-submenu__title>.el-submenu__icon-arrow{
+    color: #FC5000;
+}
+
+header .header_top .header_top_content {
+    overflow: inherit;
+    font-size: 0;
+}
+
+header .header_top .header_top_left {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 18px;
+}
+
+header .header_top .header_top_left .header_logo {
+    width: 156px;
+    overflow: hidden;
+}
+
+header .header_top .header_top_left .header_logo img {
+    height: 28px;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+header .header_top .header_top_left .header_logo h1 {
+    display: none
+}
+
+header .header_nav {
+    display: inline-block;
+    vertical-align: middle;
+    height: 48px;
+    background: #fff;
+}
+
+header .header_top .header_top_right {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 120px;
+}
+
+.explain {
+    font-size: 12px;
+    font-weight: 400;
+    color:rgba(144,147,153,1);
+    line-height: 22px;
+    padding: 18px 10px 4px;
+}
+
+</style>
+<header id="header" v-cloak>
+  <div class="header_top">
+    <div class="header_top_content">
+        <div class="header_top_left">
+            <div class="header_logo">
+                <h1>中设数字</h1>
+                <img src="/cbim/img/logo.png">
+            </div>
+        </div>
+        <div class="header_nav">
+            <el-menu 
+                :default-active="navIndex" 
+                active-text-color="#FC5000"
+                class="el-menu-demo" 
+                mode="horizontal" 
+                @select="selectNav"
+            >
+            
+                
+                <el-menu-item index="index.html">首页</el-menu-item>
+                
+            
+                
+                <el-submenu index="solution.html" popper-class="header_nav_popper">
+                    <template slot="title">解决方案</template>
+                    <template v-for="menu in navs[1].menus">
+                        <div class="explain" v-if="menu.isTitle">{{menu.pcTitle}}</div>
+                        <el-menu-item v-else-if="!menu.menu2s" :index="'solution.html-' + menu.pid">{{menu.pcTitle}}</el-menu-item>
+                        <el-submenu v-else :index="'solution.html-' + menu.pid" popper-class="header_nav_popper">
+                            <template slot="title">{{menu.pcTitle}}</template>
+                            <template v-for="menu2 in menu.menu2s">
+                                <el-menu-item :index="'solution.html-' + menu.pid + '-' + menu2.pid">{{menu2.pTitle}}</el-menu-item>
+                            </template>
+                        </el-submenu>
+                    </template>
+                </el-submenu>
+                
+            
+                
+                <el-submenu index="tool.html" popper-class="header_nav_popper">
+                    <template slot="title">平台与工具</template>
+                    <template v-for="menu in navs[2].menus">
+                        <div class="explain" v-if="menu.isTitle">{{menu.pcTitle}}</div>
+                        <el-menu-item v-else-if="!menu.menu2s" :index="'tool.html-' + menu.pid">{{menu.pcTitle}}</el-menu-item>
+                        <el-submenu v-else :index="'tool.html-' + menu.pid" popper-class="header_nav_popper">
+                            <template slot="title">{{menu.pcTitle}}</template>
+                            <template v-for="menu2 in menu.menu2s">
+                                <el-menu-item :index="'tool.html-' + menu.pid + '-' + menu2.pid">{{menu2.pTitle}}</el-menu-item>
+                            </template>
+                        </el-submenu>
+                    </template>
+                </el-submenu>
+                
+            
+                
+                <el-menu-item index="consult.html">咨询</el-menu-item>
+                
+            
+                
+                <el-menu-item index="training.html">培训</el-menu-item>
+                
+            
+                
+                <el-menu-item index="design.html">设计管理</el-menu-item>
+                
+            
+                
+                <el-menu-item index="case.html">案例</el-menu-item>
+                
+            
+                
+                <el-menu-item index="industry.html">行业热点</el-menu-item>
+                
+            
+            </el-menu>
+        </div>
+        <div class="header_top_right">
+            <el-menu :default-active="rightIndex" class="el-menu-demo" mode="horizontal" @select="selectRight">
+                <el-menu-item index="1">预约演示</el-menu-item>
+                <el-menu-item index="2">价格</el-menu-item>
+                <el-menu-item index="3">登录</el-menu-item>
+                <el-menu-item index="4">免费试用</el-menu-item>
+            </el-menu>
+        </div>
+    </div>
+  </div>
+</header>
+<script>
+;(function(){
+
+    function getQueryObj(){
+        var query = location.search.substring(1);
+        var vars = query.split("&");
+        var obj = {};
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            obj[pair[0]] = decodeURIComponent(pair[1]);
+        }
+        return obj;
+    }
+    
+    CBIM.navs = JSON.parse('[{"name":"首页","url":"index.html"},{"name":"解决方案","url":"solution.html","isSub":true},{"name":"平台与工具","url":"tool.html","isSub":true},{"name":"咨询","url":"consult.html"},{"name":"培训","url":"training.html"},{"name":"设计管理","url":"design.html"},{"name":"案例","url":"case.html"},{"name":"行业热点","url":"industry.html"}]');
+    
+    var route = location.pathname.slice(1) || CBIM.navs[0].url;
+    var queryObj = getQueryObj();
+    if(queryObj.pid){
+        route += '-' + queryObj.pid;
+    }
+    if(queryObj.pid2){
+        route += '-' + queryObj.pid2;
+    }
+
+    CBIM.queryObj = queryObj;
+
+    new Vue({
+        el: '#header',
+        data: {
+            navIndex: route,
+            rightIndex: '',
+            navs: CBIM.navs,
+        },
+        created: function(){
+            var vm = this;
+            CBIM.api.solution.Get().then(function(list){
+                list[0].isTitle = true;
+                list.forEach(info => {
+                    info.pid = info.pcTitle;
+                });
+                vm.$set(vm.navs[1], 'menus', list);
+            });
+            CBIM.api.platformTool.titleList().then(function(list){
+                vm.$set(vm.navs[2], 'menus', list.map(function(name){
+                    return {pcTitle: name, pid: name};
+                }));
+            });
+        },
+        methods: {
+            selectNav: function(key, keyPath) {
+                var keys = key.split('-');
+                var url = keys[0];
+                if(url == CBIM.navs[0].url){
+                    url = '/';
+                }
+                var querys = {};
+                if(keys[1]){
+                    querys.pid = keys[1];
+                }
+                if(keys[2]){
+                    querys.pid2 = keys[2];
+                }
+                var queryStr = $.param(querys);
+                if(queryStr){
+                    url += '?' + queryStr;
+                }
+                location.href = url;
+                // console.log(url);
+            },
+            selectRight: function(key, keyPath) {
+                this.rightIndex = '';
+            }
+        }
+    });
+})();
+</script><style>
+
+.h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color:rgba(83,103,119,1);
+    line-height: 36px;
+}
+
+.h2 {
+    font-size: 14px;
+    font-weight: 400;
+    color:rgba(164,179,191,1);
+    line-height: 22px;
+}
+
+.h3 {
+    font-size: 14px;
+    font-weight: 400;
+    color:rgba(134,154,170,1);
+    line-height: 22px;
+}
+
+.c_h1 {
+    font-size: 20px;
+    font-weight: 500;
+    color: rgba(83,103,119,1);
+    line-height: 30px;
+}
+
+.c_h2 {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(164,179,191,1);
+    line-height: 22px;
+}
+
+.c_h3 {
+    font-size:14px;
+    font-weight:500;
+    color:rgba(41,51,60,1);
+    line-height:22px;
+}
+
+.c_h4 {
+    font-size:14px;
+    font-weight:400;
+    color:rgba(164,179,191,1);
+    line-height:22px;
+}
+
+main .banner_warp{
+    position: relative;
+}
+
+main .banner_warp .el-carousel__arrow{
+    width: 48px;
+    height: 48px;
+    background: transparent !important;
+}
+
+main .banner_warp .el-carousel__arrow i{
+    font-size: 48px;
+}
+
+main .banner_warp .el-carousel__button{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+main .banner_warp .el-carousel__indicator--horizontal{
+    padding: 12px;
+}
+
+main .banner_warp .el-image__inner{
+    width: auto;
+}
+
+main .banner_warp .describe{
+    position: absolute;
+    left: 204px;
+    top: 305px;
+    color: #fff;
+}
+main .banner_warp .describe.black{
+    color: #000;
+}
+
+main .content-1464 .el-card__body {
+    padding: 0px;
+}
+
+main .center_box_index{
+    text-align: center;
+}
+
+main .center_box_index .item{
+    display: inline-block;
+    width: 280px;
+    height: 336px;
+    margin-left: 16px;
+    position: relative;
+}
+
+main .center_box_index .item .image {
+    width: 100%;
+    height: 166px;
+}
+
+main .center_box_index .item:first-child {
+    margin-left: 0;
+}
+
+main .side_box_index:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden
+}
+
+main .side_box_index .left{
+    float: left;
+    width: 706px;
+}
+
+main .side_box_index .rigth{
+    float: left;
+    width: 708px;
+}
+
+main .side_box_index>div:first-child{
+    margin-right: 50px;
+}
+
+main .side_box_index .item{
+    display: inline-block;
+    width: 348px;
+    height: 110px;
+    box-sizing: border-box;
+    padding: 20px;
+    position: relative;
+    margin-top: 20px;
+}
+
+main .side_box_index .item:nth-child(even) {
+    margin-left: 12px;
+}
+
+main .side_box_index .item .image {
+    width: 56px;
+    height: 56px;
+    margin-top: 7px;
+}
+
+main .side_box_index .item .text {
+    display: inline-block;
+    vertical-align: top;
+    width: 158px;
+    margin-left: 24px;
+}
+
+main .side_box_index .item .arrow {
+    height: 24px;
+    width: 24px;
+    color: #A4B3BF;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    z-index: 10;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 24px;
+}
+
+main .case_warp .el-carousel__item .el-image{
+    width: 100%;
+    height: 100%;
+}
+
+main .case_warp .el-carousel__item .el-image{
+    width: 100%;
+    height: 100%;
+}
+
+main .case_warp .el-carousel__indicators{
+    display: none;
+}
+
+main .case_warp .describe{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 134px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    text-align: left;
+}
+
+main .case_warp .el-carousel__arrow{
+    width: 48px;
+    height: 48px;
+}
+
+main .case_warp .el-carousel__arrow i{
+    font-size: 48px;
+}
+
+main .advantage_warp{
+    position: relative;
+    height: 800px;
+}
+
+main .advantage_warp .advantage_item_warp{
+    width: 1506px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+main .advantage_warp .advantage_item{
+    position: absolute;
+    text-align: center;
+    width: 300px;
+    height: 312px;
+    padding: 0 20px;
+}
+
+main .advantage_warp .advantage_item .text1{
+    font-size:30px;
+    font-weight:500;
+    color:rgba(253,79,0,1);
+    line-height:46px;
+    margin-top: 40px;
+}
+
+main .advantage_warp .advantage_item .text2{
+    font-size:24px;
+    font-weight:500;
+    color:rgba(83,103,119,1);
+    line-height:36px;
+    margin-top: 20px;
+}
+
+main .advantage_warp .advantage_item .text3{
+    margin-top: 20px;
+    text-align: left;
+}
+
+main .advantage_warp .advantage_item_1{
+    left: 0;
+    top: 243px;
+}
+
+main .advantage_warp .advantage_item_2{
+    left: 320px;
+    top: 78px;
+}
+
+main .advantage_warp .advantage_item_3{
+    left: 320px;
+    top: 410px;
+}
+
+main .advantage_warp .advantage_item_4{
+    left: 640px;
+    top: 243px;
+}
+
+main .advantage_warp .advantage_item_end{
+    position: absolute;
+    left: 960px;
+    top: 315px;
+    height: 148px;
+    width: 536px;
+}
+
+</style>
+
+<main id="main" v-cloak>
+    <div class="banner_warp">
+        <el-carousel height="800px" :interval="5000" arrow="always" trigger="click">
+            <el-carousel-item v-for="(banner,index) in banners">
+                <el-image :src="banner" fit="none" ></el-image>
+                <div class="describe" :class="{black: index == 2}">
+                    <div style="font-size: 48px;line-height: 72px;">数字让城市更美好</div>
+                    <div style="font-size: 38px;line-height: 58px;">Digital Makes Cityes Better</div>
+                    <el-button type="primary" style="margin-top: 20px;">立即咨询</el-button>
+                </div>
+            </el-carousel-item>
+        </el-carousel>
+    </div>
+    <div class="content-1464">
+        <div class="solution_warp center_box_index">
+            <div class="h1" style="margin-top: 100px;">解决方案</div>
+            <div class="h2" style="margin-top: 20px;">致力于为政府、设计、建设、施工、运维企业提供全面的一体化解决方案</div>
+            <div class="solution_item_warp" style="margin-top: 60px;">
+                <el-card v-for="(solution, index) in solutions" class="solution_item item">
+                    <a :href="solution._url"  >
+                        <el-image class="image" :src="solution.pImgUrl" fit="none" ></el-image>
+                        <div style="display:inline-block">
+                            <div class="c_h1" style="margin-top: 14px;">{{solution.pTitle}}</div>
+                            <div class="c_h2" style="margin-top: 14px;">{{solution.pDescription}}</div>
+                        </div>
+                    </a>
+                </el-card>
+            </div>
+        </div>
+        <div class="platform_warp side_box_index" style="margin-top: 112px;">
+            <div class="left">
+                <el-image src="/cbim/img/left_platform.png" fit="none" style="width: 100%;" ></el-image>
+            </div>
+            <div class="rigth">
+                <div class="h1" style="">CBIM平台类产品</div>
+                <div class="h2" style="margin-top: 20px;">将建设行业全生命期各阶段应用功能集成在统一云平台系统上,将数字化建设全过程以可视化方式呈现,实现跨专业跨部门跨企业跨地域项目云端协同</div>
+                <div class="splatform_item_warp" style="margin-top: 18px;">
+                    <el-card v-for="(platform, index) in platforms" class="splatform_item item">
+                        <a :href="platform._url"  >
+                            <img :src="platform.pImgUrl" class="image">
+                            <div class="text">
+                                <div class="c_h3">{{platform.pElTitle}}</div>
+                                <div class="c_h4">{{platform.pDescription}}</div>
+                            </div>
+                            <div class="el-icon-arrow-right arrow"></div>
+                        </a>
+                    </el-card>
+                </div>
+            </div>
+        </div>
+        <div class="tool_warp side_box_index" style="margin-top: 134px;">
+            <div class="rigth">
+                <div class="h1" style="">CBIM工具类产品</div>
+                <div class="h2" style="margin-top: 20px;">历时六年,国内顶级BIM设计团队倾力打造,贯穿设计全流程,为专业设计师量身定制,利用实际项目滚动优化,提高BIM设计总体效率20%~30%</div>
+                <div class="tool_item_warp" style="margin-top: 18px;">
+                    <el-card v-for="(tool, index) in tools" class="tool_item item">
+                        <a :href="tool._url"  >
+                            <img :src="tool.pImgUrl" class="image">
+                            <div class="text">
+                                <div class="c_h3">{{tool.pElTitle}}</div>
+                                <div class="c_h4">{{tool.pDescription}}</div>
+                            </div>
+                            <div class="el-icon-arrow-right arrow"></div>
+                        </a>
+                    </el-card>
+                </div>
+            </div>
+            <div class="left">
+                <el-image src="/cbim/img/left_tool.png" fit="none" style="width: 100%;" ></el-image>
+            </div>
+        </div>
+        <div class="service_warp side_box_index" style="margin-top: 175px;">
+            <div class="left">
+                <el-image src="/cbim/img/left_service.png" fit="none" style="width: 100%;" ></el-image>
+            </div>
+            <div class="rigth">
+                <div class="h1" style="">CBIM服务类产品</div>
+                <div class="h2" style="margin-top: 20px;">沉淀多年行业经验，提供多种服务，全面支撑建设行业全生命周期保证项目落地同时，帮企业建立人才队伍</div>
+                <div class="service_item_warp" style="margin-top: 18px;">
+                    <el-card v-for="(service, index) in services" class="service_item item">
+                        <a :href="service._url"  >
+                            <img :src="service.pImgUrl" class="image">
+                            <div class="text">
+                                <div class="c_h3">{{service.pElTitle}}</div>
+                                <div class="c_h4">{{service.pDescription}}</div>
+                            </div>
+                            <div class="el-icon-arrow-right arrow"></div>
+                        </a>
+                    </el-card>
+                </div>
+            </div>
+        </div>
+        <div class="case_warp center_box_index">
+            <div class="h1" style="margin-top: 100px;">BIM案例</div>
+            <div class="h2" style="margin-top: 20px;">致力于为政府、设计、建设、施工、运维企业提供全面的一体化解决方案</div>
+            <div class="case_item_warp" style="margin-top: 60px;">
+                <el-carousel height="476px" type="card" :interval="5000" arrow="always" trigger="click">
+                    <el-carousel-item v-for="(case_,index) in cases">
+                        <a :href="case_._url"  >
+                            <el-image :src="case_.pImgUrl" fit="contain" ></el-image>
+                            <div class="describe">
+                                <div style="font-size: 20px;line-height: 30px;">数字让城市更美好</div>
+                                <div style="font-size: 14px;line-height: 22px;margin-top: 20px;">Digital Makes Cityes Better</div>
+                            </div>
+                        </a>
+                    </el-carousel-item>
+                </el-carousel>
+            </div>
+        </div>
+    </div>
+    <div class="advantage_warp" style="margin-top: 101px;">
+        <div class="advantage_item_warp">
+            
+            <el-card class="advantage_item advantage_item_1">
+                <div class="text1" style="color: #FD4F00;">TEAM</div>
+                <div class="text2">团队优势</div>
+                <div class="text3 h3">汇聚原中国建筑设计研究院有限公司BIM设计研究中心的核心团队、原中国建筑标准设计研究院有限公司部分设计团队以及多家国内知名地产公司、设计公司、IT公司众多行业专家和精英人才</div>
+            </el-card>
+            
+            <el-card class="advantage_item advantage_item_2">
+                <div class="text1" style="color: #0048B6;">POLICY</div>
+                <div class="text2">政策优势</div>
+                <div class="text3 h3">在政府的推动下基于BIM的设计、施工和运维等应用普及已经成为不可逆转发展的趋势和方向。中设数字通过赋能企业、政府、城市，引领建设行业数字化转型潮流</div>
+            </el-card>
+            
+            <el-card class="advantage_item advantage_item_3">
+                <div class="text1" style="color: #0097F7;">TECHNOLOGY</div>
+                <div class="text2">技术优势</div>
+                <div class="text3 h3">承担包括发改委、工信部、住建部以及科技部的多项国家重大课题研发，核心技术自主替代率不断提升，打造自主知识产权的BIM与CIM软件平台</div>
+            </el-card>
+            
+            <el-card class="advantage_item advantage_item_4">
+                <div class="text1" style="color: #46D3AA;">INDUSTRY</div>
+                <div class="text2">行业优势</div>
+                <div class="text3 h3">基于设计师和建设管理者的实际诉求，从实践中来，研发出一套符合中国标准和设计行业以及建设管理从业人员使用习惯的包含标准、平台、工具、基础数据的集成解决方案</div>
+            </el-card>
+            
+            <div class="advantage_item_end">
+                <div class="h1">公司优势</div>
+                <div class="h2">提供全面的一体化解决方案</div>
+                <div class="h3" style="margin-top: 20px;">中设数字是由原中国建筑设计研究院BIM设计研究中心发展而来，由中国建筑设计研究院有限公司、紫光集团、北京中设汉禾数字技术发展中心共同投资成立</div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+;(function(){
+    new Vue({
+        el: '#main',
+        data: {
+            navIndex: '1',
+            banners: [
+                '/cbim/img/banner.png',
+                '/cbim/img/banner2.png',
+                '/cbim/img/banner3.png',
+            ],
+            solutions: [],
+            platforms: [],
+            tools: [],
+            services: [],
+            cases: []
+        },
+        created: function(){
+            var vm = this;
+            
+            CBIM.api.solution.list().then(function(list){
+                for (var index = 0; index < list.length; index++) {
+                    list[index]._url = CBIM.tool.joinUrl('solution', {pid2: list[index].pId});
+                }
+                vm.solutions = list;
+            });
+            CBIM.api.platformTool.pageName(2, {index: 1, line: 8}).then(function(list){
+                for (var index = 0; index < list.length; index++) {
+                    list[index]._url = CBIM.tool.joinUrl('toolDetail', {pid: list[index].pId});
+                }
+                vm.platforms = list;
+            });
+            CBIM.api.platformTool.pageName(3, {index: 1, line: 4}).then(function(list){
+                for (var index = 0; index < list.length; index++) {
+                    list[index]._url = CBIM.tool.joinUrl('toolDetail', {pid: list[index].pId});
+                }
+                vm.tools = list;
+            });
+            CBIM.api.platformTool.pageName(4, {index: 1, line: 4}).then(function(list){
+                for (var index = 0; index < list.length; index++) {
+                    list[index]._url = CBIM.tool.joinUrl('toolDetail', {pid: list[index].pId});
+                }
+                vm.services = list;
+            });
+            CBIM.api.case.findAllPreview({pageNum: 1, pageSize: 5}).then(function(list){
+                for (var index = 0; index < list.length; index++) {
+                    list[index]._url = CBIM.tool.joinUrl('caseDetail', {pid: list[index].pId});
+                }
+                vm.cases = list;
+            });
+        },
+        methods: {
+            selectNav: function(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    });
+})();
+</script>
+<style>
+footer {
+  width: 100%;
+  height: 551px;
+  background: #0c141b;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+footer .yqlj {
+    height: 30px;
+    line-height: 30px;
+    padding-top: 80px
+}
+
+footer .yqlj span {
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 43px;
+    font-size: 16px
+}
+
+footer .yqlj img {
+    height: 30px;
+    width: 100%
+}
+
+footer .yqlj a {
+    display: inline-block
+}
+
+footer .yqlj .yqljImgs {
+    display: inline-block;
+    width: 1330px;
+}
+
+footer .yqlj .yqljImgs .image {
+    display: inline-block;
+    height: 40px;
+    min-width: 20px;
+    margin-right: 20px;
+}
+
+footer ul {
+    float: left;
+    min-width: 250px;
+    overflow: hidden;
+    margin-top: 120px
+}
+
+footer ul li span {
+  cursor: text;
+  font-size: 14px;
+}
+
+footer ul li>a:hover,
+footer ul.bold li>a:hover {
+    color: #4595f8;
+    cursor: pointer
+}
+
+footer ul li {
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px
+}
+
+footer ul li a {
+    cursor: default;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+footer ul.bold li a {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+footer ul:nth-child(3) {
+    margin-right: 30px
+}
+
+footer ul:nth-child(4) {
+    margin-right: 30px
+}
+
+footer ul:nth-child(5) {
+    margin-right: 50px
+}
+
+footer .code {
+    width: 142px;
+    height: 142px;
+    margin: 110px 0 0;
+    float: right
+}
+
+footer .ba {
+    line-height: 53px;
+    height: 53px;
+    background-color: #080f15;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 50px
+}
+</style>
+<footer id="footer" v-cloak>
+  <div class="content-1464">
+
+    <div class="yqlj">
+      <span>友情链接：</span>
+      <div class="yqljImgs">
+        <a v-for="link in links" :href="link.lLink">
+          <el-image  class="image" :src="link.lImgUrl" fit="none" ></el-image>
+        </a>
+      </div>
+    </div>
+
+    <ul class="hover">
+      <li style="margin-bottom: 20px">解决方案</li>
+      <li v-for="(solution,index) in solutions">
+        <a :href="'/cbim/toolDetails.html?pid2=' + solution.pid">{{solution.pTitle}}</a>
+      </li>
+    </ul>
+
+    <ul class="hover">
+      <li style="margin-bottom: 20px">平台与工具</li>
+      <li v-for="(platform,index) in platforms">
+        <a :href="'/cbim/solution.html?pid=' + platform.pid">{{platform.pTitle}}</a>
+      </li>
+    </ul>
+    
+    <ul class="hover bold" style="min-width: 100px;">
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/consult.html">咨询</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/training.html">培训</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/design.html">设计管理</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/case.html">案例</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/industry.html">行业热点</a>
+      </li>
+      
+    </ul>
+    
+    <ul style="min-width: 100px;">
+      <li style="margin-bottom: 8px">关于中设</li>
+      <li>
+        <a href="/cbim/company.html">公司简介</a>
+      </li>
+      <li>
+        <a href="/cbim/company.html">联系我们</a>
+      </li>
+      <li style="margin-bottom: 8px;margin-top: 20px">加入中设</li>
+      <li>
+        <a href="/cbim/recruitment.html">社会招聘</a>
+      </li>
+      <li>
+        <a href="/cbim/recruitment.html">校园招聘</a>
+      </li>
+    </ul>
+
+    <ul>
+      <li style="margin-bottom: 18px">中设数字技术股份有限公司</li>
+      <li>
+        <span>
+          电话：010-66025500（周一至周五，09:00-18:00）
+        </span>
+      </li>
+      <li>
+        <span>
+          网址：
+        </span>
+        <a href="http://www.cbim.com.cn/">www.cbim.com.cn</a>
+      </li>
+      <li>
+        <span>邮箱：</span><a href="mailto:cbim@cadg.cn">cbim@cadg.cn</a>
+      </li>
+      <li>
+        <span>
+          地点：北京市石景山区古城南街9号院绿地环球文化金融城1号楼3层
+        </span>
+      </li>
+    </ul>
+    <img src="/cbim/img/code.png" class="code">
+  </div>
+</footer>
+<script>
+;(function(){
+    new Vue({
+        el: '#footer',
+        data: {
+            links: [],
+            platforms: [],
+            solutions: [],
+        },
+        created: function(){
+            var vm = this;
+            CBIM.api.link.findAll().then(function(list){
+                vm.links = list;
+            });
+            CBIM.api.solution.list().then(function(list){
+                vm.solutions = list;
+            });
+            CBIM.api.platformTool.titleS({index: 1, line: 7}).then(function(list){
+                vm.platforms = list;
+            });
+        },
+        methods: {
+            selectNav: function(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    });
+})();
+</script></body>
+</html>

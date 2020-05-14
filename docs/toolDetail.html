@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>设计说明</title>
+<link rel="stylesheet" href="/cbim/css/reset.css">
+<link rel="stylesheet" href="/cbim/css/comm/element-ui.min.css">
+<link rel="stylesheet" href="/cbim/css/main.css">
+<link rel="shortcut icon" href="/cbim//img/favicon.ico">
+
+<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js"></script>
+<script>
+var CBIM = {
+    root: '/cbim/',
+    rresRootoot: '/cbim/',
+};
+</script>
+<script src="/cbim/js/comm/jquery-3.4.1.min.js"></script>
+<script src="/cbim/js/request.js"></script>
+<script src="/cbim/js/comm/vue.min.js"></script>
+<script src="/cbim/js/comm/moment.js"></script>
+<script>
+Vue.prototype.$moment = moment;
+</script>
+<script src="/cbim/js/comm/element-ui.min.js"></script>
+<script src="/cbim/js/main.js"></script></head>
+<body>
+<style>
+header .header_top {
+    text-align: center;
+    width: 100%;
+    height: 48px;
+    background-color: #fff;
+    line-height: 48px;
+    color: #29333C;
+    box-shadow:0px 0px 6px 0px rgba(0,0,0,0.1);
+}
+
+
+header .header_top .el-menu.el-menu--horizontal{
+    border: 0;
+}
+
+header .header_top .el-menu--horizontal>.el-menu-item,
+header .header_top .el-menu--horizontal>.el-submenu .el-submenu__title{
+    height: 48px;
+    line-height: 48px;
+    font-size: 16px;
+    padding: 0 16px;
+    font-weight: 500;
+    border-bottom: 0;
+}
+
+header .header_top .is-active>.el-submenu__title>.el-submenu__icon-arrow,
+.header_nav_popper .is-active>.el-submenu__title>.el-submenu__icon-arrow{
+    color: #FC5000;
+}
+
+header .header_top .header_top_content {
+    overflow: inherit;
+    font-size: 0;
+}
+
+header .header_top .header_top_left {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 18px;
+}
+
+header .header_top .header_top_left .header_logo {
+    width: 156px;
+    overflow: hidden;
+}
+
+header .header_top .header_top_left .header_logo img {
+    height: 28px;
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+header .header_top .header_top_left .header_logo h1 {
+    display: none
+}
+
+header .header_nav {
+    display: inline-block;
+    vertical-align: middle;
+    height: 48px;
+    background: #fff;
+}
+
+header .header_top .header_top_right {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 120px;
+}
+
+.explain {
+    font-size: 12px;
+    font-weight: 400;
+    color:rgba(144,147,153,1);
+    line-height: 22px;
+    padding: 18px 10px 4px;
+}
+
+</style>
+<header id="header" v-cloak>
+  <div class="header_top">
+    <div class="header_top_content">
+        <div class="header_top_left">
+            <div class="header_logo">
+                <h1>中设数字</h1>
+                <img src="/cbim/img/logo.png">
+            </div>
+        </div>
+        <div class="header_nav">
+            <el-menu 
+                :default-active="navIndex" 
+                active-text-color="#FC5000"
+                class="el-menu-demo" 
+                mode="horizontal" 
+                @select="selectNav"
+            >
+            
+                
+                <el-menu-item index="index.html">首页</el-menu-item>
+                
+            
+                
+                <el-submenu index="solution.html" popper-class="header_nav_popper">
+                    <template slot="title">解决方案</template>
+                    <template v-for="menu in navs[1].menus">
+                        <div class="explain" v-if="menu.isTitle">{{menu.pcTitle}}</div>
+                        <el-menu-item v-else-if="!menu.menu2s" :index="'solution.html-' + menu.pid">{{menu.pcTitle}}</el-menu-item>
+                        <el-submenu v-else :index="'solution.html-' + menu.pid" popper-class="header_nav_popper">
+                            <template slot="title">{{menu.pcTitle}}</template>
+                            <template v-for="menu2 in menu.menu2s">
+                                <el-menu-item :index="'solution.html-' + menu.pid + '-' + menu2.pid">{{menu2.pTitle}}</el-menu-item>
+                            </template>
+                        </el-submenu>
+                    </template>
+                </el-submenu>
+                
+            
+                
+                <el-submenu index="tool.html" popper-class="header_nav_popper">
+                    <template slot="title">平台与工具</template>
+                    <template v-for="menu in navs[2].menus">
+                        <div class="explain" v-if="menu.isTitle">{{menu.pcTitle}}</div>
+                        <el-menu-item v-else-if="!menu.menu2s" :index="'tool.html-' + menu.pid">{{menu.pcTitle}}</el-menu-item>
+                        <el-submenu v-else :index="'tool.html-' + menu.pid" popper-class="header_nav_popper">
+                            <template slot="title">{{menu.pcTitle}}</template>
+                            <template v-for="menu2 in menu.menu2s">
+                                <el-menu-item :index="'tool.html-' + menu.pid + '-' + menu2.pid">{{menu2.pTitle}}</el-menu-item>
+                            </template>
+                        </el-submenu>
+                    </template>
+                </el-submenu>
+                
+            
+                
+                <el-menu-item index="consult.html">咨询</el-menu-item>
+                
+            
+                
+                <el-menu-item index="training.html">培训</el-menu-item>
+                
+            
+                
+                <el-menu-item index="design.html">设计管理</el-menu-item>
+                
+            
+                
+                <el-menu-item index="case.html">案例</el-menu-item>
+                
+            
+                
+                <el-menu-item index="industry.html">行业热点</el-menu-item>
+                
+            
+            </el-menu>
+        </div>
+        <div class="header_top_right">
+            <el-menu :default-active="rightIndex" class="el-menu-demo" mode="horizontal" @select="selectRight">
+                <el-menu-item index="1">预约演示</el-menu-item>
+                <el-menu-item index="2">价格</el-menu-item>
+                <el-menu-item index="3">登录</el-menu-item>
+                <el-menu-item index="4">免费试用</el-menu-item>
+            </el-menu>
+        </div>
+    </div>
+  </div>
+</header>
+<script>
+;(function(){
+
+    function getQueryObj(){
+        var query = location.search.substring(1);
+        var vars = query.split("&");
+        var obj = {};
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            obj[pair[0]] = decodeURIComponent(pair[1]);
+        }
+        return obj;
+    }
+    
+    CBIM.navs = JSON.parse('[{"name":"首页","url":"index.html"},{"name":"解决方案","url":"solution.html","isSub":true},{"name":"平台与工具","url":"tool.html","isSub":true},{"name":"咨询","url":"consult.html"},{"name":"培训","url":"training.html"},{"name":"设计管理","url":"design.html"},{"name":"案例","url":"case.html"},{"name":"行业热点","url":"industry.html"}]');
+    
+    var route = location.pathname.slice(1) || CBIM.navs[0].url;
+    var queryObj = getQueryObj();
+    if(queryObj.pid){
+        route += '-' + queryObj.pid;
+    }
+    if(queryObj.pid2){
+        route += '-' + queryObj.pid2;
+    }
+
+    CBIM.queryObj = queryObj;
+
+    new Vue({
+        el: '#header',
+        data: {
+            navIndex: route,
+            rightIndex: '',
+            navs: CBIM.navs,
+        },
+        created: function(){
+            var vm = this;
+            CBIM.api.solution.Get().then(function(list){
+                list[0].isTitle = true;
+                list.forEach(info => {
+                    info.pid = info.pcTitle;
+                });
+                vm.$set(vm.navs[1], 'menus', list);
+            });
+            CBIM.api.platformTool.titleList().then(function(list){
+                vm.$set(vm.navs[2], 'menus', list.map(function(name){
+                    return {pcTitle: name, pid: name};
+                }));
+            });
+        },
+        methods: {
+            selectNav: function(key, keyPath) {
+                var keys = key.split('-');
+                var url = keys[0];
+                if(url == CBIM.navs[0].url){
+                    url = '/';
+                }
+                var querys = {};
+                if(keys[1]){
+                    querys.pid = keys[1];
+                }
+                if(keys[2]){
+                    querys.pid2 = keys[2];
+                }
+                var queryStr = $.param(querys);
+                if(queryStr){
+                    url += '?' + queryStr;
+                }
+                location.href = url;
+                // console.log(url);
+            },
+            selectRight: function(key, keyPath) {
+                this.rightIndex = '';
+            }
+        }
+    });
+})();
+</script><style>
+
+body,
+html {
+    min-width: 1472px;
+}
+
+</style>
+
+<main id="main" v-cloak>
+    <div class="content-1472">
+        <div class="breadcrumb">
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item><a href="/cbim/">首页</a></el-breadcrumb-item>
+                <el-breadcrumb-item><a href="/cbim/tool.html">平台与工具</a></el-breadcrumb-item>
+                <el-breadcrumb-item>{{tool.pTitle}}</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="side_box detailTitel right">
+            <div class="side_item imageBox">
+                <div class="detailItem image">
+                    <div class="imageBox">
+                        <el-image  class="image" :src="tool.pdIconUrl" fit="none" ></el-image>
+                        <div class="imageText">
+                            <div class="titelText">
+                                <div class="pTitle pre">{{tool.pTitle}}</div>
+                                <div class="pElTitle pre">{{tool.pElTitle}}</div>
+                            </div>
+                            <div class="versionText">
+                                <div class="pVersion pre">{{tool.pVersion}}</div>
+                                <div class="pUpdateAt pre">更新于 {{$moment(tool.pUpdateAt).format('YYYY.MM.DD')}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="side_item textBox">
+                <div class="text_warp">
+                    <div class="ptTitle pre">{{tool.pTitle}}</div>
+                    <div class="ptDescription pre">{{tool.pDescription}}</div>
+                    <div class="details details_0">
+                        <div v-for="(detail, index) in tool.ptContents[0].ptDetails" class="item">
+                            <el-image  class="image" :src="detail.pdIconUrl" fit="contain"></el-image>
+                            <div class="pdTitle pre">{{detail.pdTitle}}</div>
+                            <div class="pdDescription pre">{{detail.pdDescription}}</div>
+                        </div>
+                    </div>
+                    <a :href="tool.ptContents[0].ptLink">
+                        <el-button class="ptLink" type="primary">立即咨询</el-button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="detailContent">
+            <el-tabs class="tabs" v-model="tab" type="card" @tab-click="handleClick">
+                <el-tab-pane v-for="(ptContent, index) in tool.ptContents" v-if="index > 0" :label="ptContent.ptTitle" :name="ptContent.ptTitle"></el-tab-pane>
+            </el-tabs>
+            <div class="detailItems">
+                <div v-for="(ptContent, index) in tool.ptContents" v-if="index > 0" class="detailItem">
+                    <a :name="ptContent.ptTitle"></a>
+                    <div class="ptTitleBox">
+                        <el-image  class="image" :src="ptContent.ptImgUrl" fit="contain"></el-image>
+                        <div class="ptTitle pre">{{ptContent.ptTitle}}</div>
+                    </div>
+                    <div class="details details_3">
+                        <div v-for="(detail, index) in ptContent.ptDetails" class="item" :class="{ hasImg: detail.pdIconUrl || detail.pdMediaFormat }">
+                            <div class="pdTitle pre">{{detail.pdTitle}}</div>
+                            <div class="pdDescription pre">{{detail.pdDescription}}</div>
+                            <el-image v-if="detail.pdIconUrl" class="image" :src="detail.pdIconUrl" fit="contain"></el-image>
+                            <video v-if="detail.pdMediaFormat" class="mediaFormat" controls>
+                                <source :src="detail.pdMediaFormat" type="video/mp4">
+                                <source :src="detail.pdMediaFormat" type="video/ogg">
+                                您的浏览器不支持Video标签。
+                            </video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="detailNext">
+        <div class="content-1472">
+            <div class="btn prev" @click="next(-1)" v-if="index > 1">
+                <span class="el-icon-arrow-left icon"></span>上一个案例
+            </div>
+            <div class="btn next" @click="next(1)">
+                下一个案例<span class="el-icon-arrow-right icon"></span>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+;(function(){
+
+    var pid = CBIM.queryObj.pid;
+    var query = decodeURIComponent(CBIM.queryObj.query);
+    try{
+        query = JSON.parse(query);
+    }catch(e){
+        query = {
+            index: 1,
+        }
+    }
+    query.line = 1;
+
+    var loading = false;
+
+    new Vue({
+        el: '#main',
+        data: {
+            tool: { ptContents: [{}] },
+            index: query.index,
+            tab: '',
+        },
+        created: function(){
+            var vm = this;
+            CBIM.api.platformTool.Get(pid).then(function(tool){
+                document.title = tool.pTitle;
+                if(!tool.ptContents[0] || tool.ptContents[0].length == 0){
+                    tool.ptContents[0] = [{}];
+                }
+                vm.tool = tool;
+            });
+        },
+        methods: {
+            handleClick: function(){
+                location.hash = '#' + this.tab;
+            },
+            next: function(increase){
+                var vm = this;
+                if(loading) return;
+                query.index += increase;
+                loading = true;
+                CBIM.api.platformTool.titleS(query).then(function(list){
+                    loading = false;
+                    if(!list || list.length == 0){
+                        if(query.index > 1){
+                            query.index = 1;
+                            vm.next(0);
+                        }
+                    }else{
+                        var url = CBIM.tool.joinUrl('toolDetail', {
+                            pid: list[0].pId,
+                            query: JSON.stringify(query)
+                        });
+                        location.href = url;
+                    }
+                });
+            }
+        },
+    });
+})();
+</script>
+<style>
+footer {
+  width: 100%;
+  height: 551px;
+  background: #0c141b;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+footer .yqlj {
+    height: 30px;
+    line-height: 30px;
+    padding-top: 80px
+}
+
+footer .yqlj span {
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 43px;
+    font-size: 16px
+}
+
+footer .yqlj img {
+    height: 30px;
+    width: 100%
+}
+
+footer .yqlj a {
+    display: inline-block
+}
+
+footer .yqlj .yqljImgs {
+    display: inline-block;
+    width: 1330px;
+}
+
+footer .yqlj .yqljImgs .image {
+    display: inline-block;
+    height: 40px;
+    min-width: 20px;
+    margin-right: 20px;
+}
+
+footer ul {
+    float: left;
+    min-width: 250px;
+    overflow: hidden;
+    margin-top: 120px
+}
+
+footer ul li span {
+  cursor: text;
+  font-size: 14px;
+}
+
+footer ul li>a:hover,
+footer ul.bold li>a:hover {
+    color: #4595f8;
+    cursor: pointer
+}
+
+footer ul li {
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px
+}
+
+footer ul li a {
+    cursor: default;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+footer ul.bold li a {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+footer ul:nth-child(3) {
+    margin-right: 30px
+}
+
+footer ul:nth-child(4) {
+    margin-right: 30px
+}
+
+footer ul:nth-child(5) {
+    margin-right: 50px
+}
+
+footer .code {
+    width: 142px;
+    height: 142px;
+    margin: 110px 0 0;
+    float: right
+}
+
+footer .ba {
+    line-height: 53px;
+    height: 53px;
+    background-color: #080f15;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 50px
+}
+</style>
+<footer id="footer" v-cloak>
+  <div class="content-1464">
+
+    <div class="yqlj">
+      <span>友情链接：</span>
+      <div class="yqljImgs">
+        <a v-for="link in links" :href="link.lLink">
+          <el-image  class="image" :src="link.lImgUrl" fit="none" ></el-image>
+        </a>
+      </div>
+    </div>
+
+    <ul class="hover">
+      <li style="margin-bottom: 20px">解决方案</li>
+      <li v-for="(solution,index) in solutions">
+        <a :href="'/cbim/toolDetails.html?pid2=' + solution.pid">{{solution.pTitle}}</a>
+      </li>
+    </ul>
+
+    <ul class="hover">
+      <li style="margin-bottom: 20px">平台与工具</li>
+      <li v-for="(platform,index) in platforms">
+        <a :href="'/cbim/solution.html?pid=' + platform.pid">{{platform.pTitle}}</a>
+      </li>
+    </ul>
+    
+    <ul class="hover bold" style="min-width: 100px;">
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/consult.html">咨询</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/training.html">培训</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/design.html">设计管理</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/case.html">案例</a>
+      </li>
+      
+      <li style="margin-bottom: 20px">
+        <a href="/cbim/industry.html">行业热点</a>
+      </li>
+      
+    </ul>
+    
+    <ul style="min-width: 100px;">
+      <li style="margin-bottom: 8px">关于中设</li>
+      <li>
+        <a href="/cbim/company.html">公司简介</a>
+      </li>
+      <li>
+        <a href="/cbim/company.html">联系我们</a>
+      </li>
+      <li style="margin-bottom: 8px;margin-top: 20px">加入中设</li>
+      <li>
+        <a href="/cbim/recruitment.html">社会招聘</a>
+      </li>
+      <li>
+        <a href="/cbim/recruitment.html">校园招聘</a>
+      </li>
+    </ul>
+
+    <ul>
+      <li style="margin-bottom: 18px">中设数字技术股份有限公司</li>
+      <li>
+        <span>
+          电话：010-66025500（周一至周五，09:00-18:00）
+        </span>
+      </li>
+      <li>
+        <span>
+          网址：
+        </span>
+        <a href="http://www.cbim.com.cn/">www.cbim.com.cn</a>
+      </li>
+      <li>
+        <span>邮箱：</span><a href="mailto:cbim@cadg.cn">cbim@cadg.cn</a>
+      </li>
+      <li>
+        <span>
+          地点：北京市石景山区古城南街9号院绿地环球文化金融城1号楼3层
+        </span>
+      </li>
+    </ul>
+    <img src="/cbim/img/code.png" class="code">
+  </div>
+</footer>
+<script>
+;(function(){
+    new Vue({
+        el: '#footer',
+        data: {
+            links: [],
+            platforms: [],
+            solutions: [],
+        },
+        created: function(){
+            var vm = this;
+            CBIM.api.link.findAll().then(function(list){
+                vm.links = list;
+            });
+            CBIM.api.solution.list().then(function(list){
+                vm.solutions = list;
+            });
+            CBIM.api.platformTool.titleS({index: 1, line: 7}).then(function(list){
+                vm.platforms = list;
+            });
+        },
+        methods: {
+            selectNav: function(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    });
+})();
+</script></body>
+</html>
